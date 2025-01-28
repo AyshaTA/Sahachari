@@ -1,5 +1,5 @@
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
-
 
 class Home extends StatelessWidget {
   // List of products with details
@@ -16,6 +16,25 @@ class Home extends StatelessWidget {
       "price": "₹150",
       "category": "Category: Vegetable",
     },
+    {
+      "imagePath": "assets/images/p6.jpg",
+      "title": "Soft Drinks",
+      "price": "₹200",
+      "category": "Category: Drinks",
+    },
+    {
+      "imagePath": "assets/images/p5.jpg",
+      "title": "Apple",
+      "price": "₹200",
+      "category": "Category: Fruit",
+    },
+  ];
+
+  // List of carousel images
+  final List<String> carouselImages = [
+    'assets/images/banner.jpg',
+    'assets/images/banner1.jpg',
+    'assets/images/banner2.jpg',
   ];
 
   @override
@@ -35,7 +54,7 @@ class Home extends StatelessWidget {
                 decoration: InputDecoration(
                   hintText: 'Search Sahachari',
                   border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(30),
+                    borderRadius: BorderRadius.circular(50),
                     borderSide: BorderSide.none,
                   ),
                   fillColor: Colors.white,
@@ -59,45 +78,55 @@ class Home extends StatelessWidget {
                 child: ListView(
                   scrollDirection: Axis.horizontal,
                   children: [
-                    SizedBox(width: 20),
-                    _buildCategoryIcon(Icons.breakfast_dining, "Breakfast"),
-                    SizedBox(width: 20),
-                    _buildCategoryIcon(Icons.lunch_dining, "Lunch"),
-                    SizedBox(width: 20),
-                    _buildCategoryIcon(Icons.dinner_dining, "Dinner"),
-                    SizedBox(width: 20),
-                    _buildCategoryIcon(Icons.shopping_bag, "Groceries"),
-                    SizedBox(width: 20),
-                    _buildCategoryIcon(Icons.emoji_nature, "Vegetables"),
+                    SizedBox(width: 30),
+                    _buildCategoryIcon(Icons.food_bank, "Food"),
+                    SizedBox(width: 30),
+                    _buildCategoryIcon(Icons.shopping_cart, "Vegetables & Fruits"),
+                    SizedBox(width: 30),
+                    _buildCategoryIcon(Icons.home, "Home Made"),
+                    SizedBox(width: 30),
+                    _buildCategoryIcon(Icons.set_meal_sharp, "Meat"),
+                    SizedBox(width: 30),
                   ],
                 ),
               ),
             ),
-            // Banner
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 8.0),
-              child: Container(
-                height: 500,
-                width: double.infinity,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10),
-                  image: const DecorationImage(
-                    image: AssetImage('assets/images/banner.jpg'),
-                    fit: BoxFit.cover,
-                  ),
+              child: CarouselSlider(
+                options: CarouselOptions(
+                  height: 500,
+                  autoPlay: true,
+                  enlargeCenterPage: true,
+                  aspectRatio: 16 / 9,
+                  viewportFraction: 0.9,
                 ),
+                items: carouselImages.map((imagePath) {
+                  return Builder(
+                    builder: (BuildContext context) {
+                      return Container(
+                        width: MediaQuery.of(context).size.width,
+                        margin: const EdgeInsets.symmetric(horizontal: 5.0),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10),
+                          image: DecorationImage(
+                            image: AssetImage(imagePath),
+                            fit: BoxFit.cover,
+                          ),
+                        ),
+                      );
+                    },
+                  );
+                }).toList(),
               ),
             ),
-
             const SizedBox(height: 10),
-
-            // Product Grid
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 8.0),
               child: GridView.builder(
                 shrinkWrap: true,
                 physics: NeverScrollableScrollPhysics(),
-                itemCount: products.length, // Use dynamic count from the list
+                itemCount: products.length,
                 gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: 2,
                   childAspectRatio: 0.8,
@@ -107,10 +136,10 @@ class Home extends StatelessWidget {
                 itemBuilder: (context, index) {
                   final product = products[index];
                   return _buildProductCard(
-                    product["imagePath"]!, // Dynamic image path
-                    product["title"]!,     // Dynamic title
-                    product["price"]!,     // Dynamic price
-                    product["category"]!,  // Dynamic category
+                    product["imagePath"]!,
+                    product["title"]!,
+                    product["price"]!,
+                    product["category"]!,
                   );
                 },
               ),
@@ -120,9 +149,11 @@ class Home extends StatelessWidget {
       ),
       bottomNavigationBar: BottomNavigationBar(
         items: const [
-          BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
-          BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Profile'),
-          BottomNavigationBarItem(icon: Icon(Icons.shopping_cart), label: 'Cart'),
+          BottomNavigationBarItem(icon: Icon(Icons.home_outlined), label: 'Home'),
+          BottomNavigationBarItem(icon: Icon(Icons.food_bank_outlined), label: 'Food'),
+          BottomNavigationBarItem(icon: Icon(Icons.person_2_outlined), label: 'Profile'),
+          BottomNavigationBarItem(icon: Icon(Icons.shopping_cart_outlined), label: 'Cart'),
+          
         ],
         selectedItemColor: Colors.green,
         unselectedItemColor: Colors.grey,
@@ -130,7 +161,6 @@ class Home extends StatelessWidget {
     );
   }
 
-  // Helper method to build category icons
   Widget _buildCategoryIcon(IconData icon, String label) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 8.0),
@@ -156,7 +186,6 @@ class Home extends StatelessWidget {
     );
   }
 
-  // Helper method to build product cards
   Widget _buildProductCard(
       String imagePath, String title, String price, String category) {
     return Container(
@@ -170,10 +199,29 @@ class Home extends StatelessWidget {
           Expanded(
             child: ClipRRect(
               borderRadius: const BorderRadius.vertical(top: Radius.circular(10)),
-              child: Image.asset(
-                imagePath,
-                fit: BoxFit.cover,
-                width: double.infinity,
+              child: Stack(
+                children: [
+                  Image.asset(
+                    imagePath,
+                    fit: BoxFit.cover,
+                    width: double.infinity,
+                  ),
+                  Positioned(
+                    right: 8,
+                    top: 8,
+                    child: CircleAvatar(
+                      backgroundColor: Colors.green,
+                      radius: 18,
+                      child: IconButton(
+                        onPressed: () {
+                          // Add your "add to cart" logic here
+                          print('$title added to cart');
+                        },
+                        icon: const Icon(Icons.add, color: Colors.white, size: 18),
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ),
           ),
@@ -184,7 +232,8 @@ class Home extends StatelessWidget {
               children: [
                 Text(title, style: const TextStyle(fontWeight: FontWeight.bold)),
                 Text(price, style: TextStyle(color: Colors.green)),
-                Text(category, style: const TextStyle(fontSize: 12, color: Colors.grey)),
+                Text(category,
+                    style: const TextStyle(fontSize: 12, color: Colors.grey)),
               ],
             ),
           ),
